@@ -17,10 +17,7 @@ def CreateFSIWheels(vehicle, terrain):
     
     # Create geometry for rigid wheels
     geometry = chrono.ChBodyGeometry()
-    geometry.coll_meshes.append(chrono.TrimeshShape(chrono.VNULL, mesh_filename, 0.01, 0))
-    
-
-    
+    geometry.coll_meshes.append(chrono.TrimeshShape(chrono.VNULL, chrono.QUNIT, mesh_filename, chrono.VNULL))
     # Iterate through all axles and wheels
     for axle in vehicle.GetAxles():
         for wheel in axle.GetWheels():
@@ -57,7 +54,8 @@ def CreateFSIWheels(vehicle, terrain):
 veh.SetDataPath(chrono.GetChronoDataPath() + 'vehicle/')
 # Problem settings (mirroring the C++ demo)
 target_speed = 7.0
-tend = 30.0
+# tend = 30.0
+tend = 8.0
 verbose = True
 
 # Visualization settings
@@ -88,15 +86,17 @@ spacing = 0.04
 vehicle_json = "Polaris/Polaris.json"
 engine_json = "Polaris/Polaris_EngineSimpleMap.json"
 transmission_json = "Polaris/Polaris_AutomaticTransmissionSimpleMap.json"
-# tire_json = "Polaris/Polaris_RigidTire.json"
-tire_json = "Polaris/Polaris_ANCF4Tire_Lumped.json"
+tire_json = "Polaris/Polaris_RigidTire.json"
+# tire_json = "Polaris/Polaris_ANCF4Tire_Lumped.json"
 if(tire_json.find("ANCF4Tire") != -1):
     fea_tires = True
 else:
     fea_tires = False
 
+
 # Visualization type for vehicle parts (PRIMITIVES, MESH, or NONE)
-chassis_vis_type = chrono.VisualizationType_MESH
+# chassis_vis_type = chrono.VisualizationType_MESH
+chassis_vis_type = chrono.VisualizationType_NONE
 suspension_vis_type = chrono.VisualizationType_PRIMITIVES
 steering_vis_type = chrono.VisualizationType_PRIMITIVES
 wheel_vis_type = chrono.VisualizationType_MESH
