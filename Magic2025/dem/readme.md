@@ -14,4 +14,4 @@ In the terminal, you should see temperature increasing at every frame. Note that
 - Files named `DEMdemo_mesh_XXXX.vtk` (where `XXXX` is a frame number) store the mesh at each output frame. 
 - Files named `DEMdemo_output_XXXX.csv` contain tabular data of all the particles for each frame, such as particle position, velocity, radius, temperatures and other relevant simulation results. 
 
-![alt text](image.png)
+![alt text](drum.png)
