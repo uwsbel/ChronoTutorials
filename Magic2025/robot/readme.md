@@ -4,12 +4,12 @@ After installed PyChrono, assume you are in your PyChrono conda environment, ple
 
 1) test robot on rigid terrain
 ```bash
-python script/playground.py
+python simulation/playground.py
 ```
 
 2) test robot on CRM granular terrain
 ```bash
-python script/playground_crm.py
+python simulation/playground_crm.py
 ```
 
 ### Results
