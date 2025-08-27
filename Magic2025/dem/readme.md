@@ -1,17 +1,23 @@
 
-To ensure `cylinder.obj` loads properly, run the following command from within the `dem` folder:
+## Rotating Drum DEM Tutorial
+
+This tutorial demonstrates a 2D rotating drum simulation using PyDEME.
+
+### How to Run
+
+From the `dem` folder, run:
 
 ```bash
-python ./pyDEME_RotatingDrum2D.py
+python pyDEME_RotatingDrum2D.py
 ```
 
-In the terminal, you should see temperature increasing at every frame. Note that, the results might be slightly different among different runs due to randomized initial particle position, however, it should be ball park similar. 
+### Expected Output
 
- ![alt text](terminal_output.png)
+You should see temperature increasing at every frame in the terminal. Results may vary slightly due to randomized initial particle positions.
 
- A folder named `HeatTransfer` will be created, containing a series of output files that can be visualized using software such as `ParaView`:
+Output files will be saved in the `HeatTransfer` folder and can be visualized with ParaView:
+- `DEMdemo_mesh_XXXX.vtk`: Mesh at each output frame
+- `DEMdemo_output_XXXX.csv`: Tabular data for all particles per frame
 
-- Files named `DEMdemo_mesh_XXXX.vtk` (where `XXXX` is a frame number) store the mesh at each output frame. 
-- Files named `DEMdemo_output_XXXX.csv` contain tabular data of all the particles for each frame, such as particle position, velocity, radius, temperatures and other relevant simulation results. 
-
-![alt text](drum.png)
+![Terminal Output](terminal_output.png)
+![Drum Output](drum.png)

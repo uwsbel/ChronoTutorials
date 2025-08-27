@@ -1,24 +1,29 @@
-### PyChrono Installation Testing Script
 
-After installed PyChrono, assume you are in your PyChrono conda environment, please run the following command:
+## Robot Simulation Tutorial
 
-1) test robot on rigid terrain
+This tutorial demonstrates robot simulation on both rigid and CRM granular terrain using PyChrono.
+
+### How to Run
+
+From the `robot` folder, run the following commands:
+
+**1. Test robot on rigid terrain:**
 ```bash
 python simulation/playground.py
 ```
 
-2) test robot on CRM granular terrain
+**2. Test robot on CRM granular terrain:**
 ```bash
 python simulation/playground_crm.py
 ```
 
-### Results
+### Expected Output
 
-Result on 1 and 2 is like figure 1 and 2.
+Results will be similar to the figures below:
 
-![Figure 1](data/vis-example/demo1.png)
+![Robot on Rigid Terrain](data/vis-example/demo1.png)
 *Figure 1: Robot on rigid terrain simulation*
 
-![Figure 2](data/vis-example/demo2.png)
+![Robot on CRM Granular Terrain](data/vis-example/demo2.png)
 *Figure 2: Robot on CRM granular terrain simulation*
 

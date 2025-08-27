@@ -1,17 +1,22 @@
-### Sensor tutorial Setup 
 
-**1. Place Sensor Data**
+## Sensor Tutorial
 
-Move the `boulder_rock` folder to the following directory (replace `[your_pychrono_env]` with the name of your PyChrono conda environment:
+This tutorial demonstrates the use of sensors in PyChrono.
 
+### Setup
+
+Move the `boulder_rock` folder to your PyChrono environment's sensor data directory:
 ```bash
 .../[your_pychrono_env]/share/chrono/data/sensor/offroad/
 ```
 
-**2. Run the Tutorial Script**
+### How to Run
 
-To test the tutorial, execute the following command from the project root:
-
+From the project root, run:
 ```bash
 python sensor/script/tutorial_SEN_camera.py
 ```
+
+### Expected Output
+
+The script will run a sensor simulation and output results using the provided boulder rock data.
