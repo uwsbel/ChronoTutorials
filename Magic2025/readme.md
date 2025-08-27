@@ -1,5 +1,5 @@
 
-## Magic2025 Setup Instructions
+## pyChrono and pyDEME Setup Instructions
 
 ### 1. Check NVIDIA Driver
 
