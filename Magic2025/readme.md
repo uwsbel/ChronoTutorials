@@ -3,7 +3,9 @@
 
 ### 1. Check NVIDIA Driver
 
-Use `nvidia-smi` to check your NVIDIA Driver version. The CUDA Version (top right) should be **12.8 or higher**.
+Use `nvidia-smi` to check your NVIDIA Driver version. The CUDA Version (top right) should be **12.8 or higher**. For example: 
+
+<img src="nvidia-smi.png" alt="nvidia-smi output" width="400"/>
 
 If your driver is lower than 12.8, please upgrade your NVIDIA Driver. You can find instructions and downloads at:
 
@@ -44,7 +46,7 @@ conda activate tutorial
 
 ---
 
-## Running Demo Scripts in Subfolders
+## Running pyChrono and pyDEME demos
 
 For instructions on running the demo scripts in each tutorial, please refer to the `readme.md` file in the respective subfolders:
 
