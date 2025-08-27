@@ -231,7 +231,7 @@ print(f"  Bndry BCE markers: {terrain.GetNumBoundaryBCEMarkers()}")
 print(f"  SPH AABB:          {aabb.min}   {aabb.max}")
 
 # Set maximum vehicle X location (based on CRM patch size)
-x_max = aabb.max.x - 4.5
+x_max = aabb.max.x - 10
 
 # --------------------------------
 # Create the path-following driver
