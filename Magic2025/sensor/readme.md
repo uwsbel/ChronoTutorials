@@ -5,8 +5,6 @@ This tutorial demonstrates the use of sensors in PyChrono.
 
 ### Setup
 
-Move the `boulder_rock` folder to your PyChrono environment's sensor data directory:
-
 Copy the `boulder_rock` folder into your PyChrono environment's sensor data directory:
 
 - **Windows:**
