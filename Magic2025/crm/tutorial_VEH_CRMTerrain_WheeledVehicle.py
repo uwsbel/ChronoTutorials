@@ -95,8 +95,7 @@ else:
 
 
 # Visualization type for vehicle parts (PRIMITIVES, MESH, or NONE)
-# chassis_vis_type = chrono.VisualizationType_MESH
-chassis_vis_type = chrono.VisualizationType_NONE
+chassis_vis_type = chrono.VisualizationType_MESH
 suspension_vis_type = chrono.VisualizationType_PRIMITIVES
 steering_vis_type = chrono.VisualizationType_PRIMITIVES
 wheel_vis_type = chrono.VisualizationType_MESH

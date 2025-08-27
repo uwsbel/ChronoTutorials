@@ -36,8 +36,8 @@ def CreateFSIQuadrupedBodies(robot, terrain):
         foot_body = robot.robot.GetChBody(foot_name)
         print(f"Adding foot body: {foot_name}")
         try:
-            num_bce = terrain.AddRigidBody(foot_body, foot_geometry, False)
-            print(f"  Added {num_bce} BCE markers on {foot_name}")
+            terrain.AddRigidBody(foot_body, foot_geometry, False)
+            print(f"  Added BCE markers on {foot_name}")
         except Exception as e:
             print(f"  Error adding foot {foot_name}: {e}")
     
@@ -46,8 +46,8 @@ def CreateFSIQuadrupedBodies(robot, terrain):
         calf_body = robot.robot.GetChBody(calf_name)
         print(f"Adding calf body: {calf_name}")
         try:
-            num_bce = terrain.AddRigidBody(calf_body, calf_geometry, False)
-            print(f"  Added {num_bce} BCE markers on {calf_name}")
+            terrain.AddRigidBody(calf_body, calf_geometry, False)
+            print(f"  Added BCE markers on {calf_name}")
         except Exception as e:
             print(f"  Error adding calf {calf_name}: {e}")
 
