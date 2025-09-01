@@ -51,6 +51,7 @@ conda activate tutorial
 For instructions on running the demo scripts in each tutorial, please refer to the `readme.md` file in the respective subfolders:
 
 - `crm`
+- `fsi`
 - `dem`
 - `robot`
 - `sensor`
