@@ -16,7 +16,7 @@ Follow the official guide for your operating system to update the driver.
 
 ### 2. Install Anaconda or Miniconda
 
-Download and install Anaconda or Miniconda from [anaconda.com/download](https://www.anaconda.com/download).
+If you haven't already done so on your machine, download and install Anaconda or Miniconda from [anaconda.com/download](https://www.anaconda.com/download).
 
 ### 3. Create and Activate Conda Environment
 
