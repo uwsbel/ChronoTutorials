@@ -21,11 +21,18 @@ def CreateFSIWheels(vehicle, terrain):
     for axle in vehicle.GetAxles():
         for wheel in axle.GetWheels():
             tire = wheel.GetTire()
-            if fea_tires:
-                print("Tire is a deformable body - Adding FEA mesh to terrain")
-                terrain.AddFeaMesh(tire.GetMesh(), False)
-            else:
-                print("Tire is a rigid body - Adding rigid body to terrain")
+            # Check if this is a deformable tire (FEA)
+            try:
+                # Try to get FEA mesh if it's a deformable tire
+                if hasattr(tire, 'GetMesh'):
+                    mesh = tire.GetMesh()
+                    terrain.AddFeaMesh(mesh, False)
+                else:
+                    # Rigid tire - add as rigid body
+                    terrain.AddRigidBody(wheel.GetSpindle(), geometry, False)
+            except Exception as e:
+                print(f"Error processing wheel: {e}")
+                # If we can't access FEA mesh methods, treat as rigid tire
                 terrain.AddRigidBody(wheel.GetSpindle(), geometry, False)
 
     
