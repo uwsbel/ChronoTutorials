@@ -16,18 +16,18 @@ Copy the `boulder_rock` folder into your PyChrono environment's sensor data dire
 	[your_pychrono_env]/share/chrono/data/sensor/offroad/
 	```
 
-Replace `[your_pychrono_env]` with the root directory of your PyChrono environment. In order to find out the path, use this command:
+Replace `[your_pychrono_env]` with the root directory of your PyChrono environment. In order to find out the the root directory, use this command:
 
 ```bash
 conda info --envs
 ```
-This lists the Conda environments on your machine and their root directories. The one with the `*` next to it is your active environment. That’s the `[your_pychrono_env]` path you need.
+This lists the Conda environments on your machine and their root directories. The one with the `*` next to it is your active environment, which provides the information regarding the `[your_pychrono_env]` root directory that you need. 
 
 ### How to Run
 
-From the project root, run:
+From withing the `sensor` folder, run:
 ```bash
-python sensor/script/tutorial_SEN_camera.py
+python script/tutorial_SEN_camera.py
 ```
 
 ### Expected Output
