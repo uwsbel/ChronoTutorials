@@ -45,7 +45,7 @@ def CreateVehicle(sys, sysSPH, sysFSI, init_pos):
     vehicle = veh.WheeledVehicle(sys, veh.GetDataFile(vehicle_json))
     vehicle.Initialize(init_pos)
     vehicle.GetChassis().SetFixed(False)
-    vehicle.SetChassisVisualizationType(chrono.VisualizationType_NONE)
+    vehicle.SetChassisVisualizationType(chrono.VisualizationType_MESH)
     vehicle.SetSuspensionVisualizationType(chrono.VisualizationType_PRIMITIVES)
     vehicle.SetSteeringVisualizationType(chrono.VisualizationType_PRIMITIVES)
     vehicle.SetWheelVisualizationType(chrono.VisualizationType_MESH)
