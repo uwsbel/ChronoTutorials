@@ -220,7 +220,7 @@ def main():
 	# Create sensors and add them to the sensor manager #
 	# ------------------------------------------------- #
 	camera_hight = 4.0 # [m]
-	camera_azimuth = 270 * pi/180.0 # [rad]
+	camera_azimuth = 0 * pi/180.0 # [rad]
 	offset_pose = chrono.ChFramed(
 		chrono.ChVector3d(
 			cam_radius * math.cos(camera_azimuth),
@@ -334,7 +334,7 @@ def main():
 	#### --------------------------- ####
 	#### PART 2: ADD A RUNNING VIPER ####
 	#### --------------------------- ####
-	'''
+	
 	m_phys_system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 	m_phys_system.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -9.81))
 	chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.0025)
@@ -361,16 +361,19 @@ def main():
 			viper_observer_radius * math.sin(viper_observer_angle),
 			viper_observer_hight
 		),
-			chrono.QuatFromAngleAxis(pi + viper_observer_angle, chrono.ChVector3d(0, 0, 1))
-		* chrono.QuatFromAngleAxis(math.atan2(viper_observer_hight, viper_observer_radius), chrono.ChVector3d(0, 1, 0))
+		chrono.QuatFromAngleAxis(pi + viper_observer_angle, chrono.ChVector3d(0, 0, 1))
+		* chrono.QuatFromAngleAxis(
+			math.atan2(viper_observer_hight, viper_observer_radius),
+			chrono.ChVector3d(0, 1, 0)
+		)
 	)
 	viper_observer = sens.ChCameraSensor(
 		rover.GetChassis().GetBody(),	# body camera is attached to
-		update_rate,			# update rate in Hz
-		viper_observer_offset,		# offset pose
-		image_width,			# image width, [pixel]
-		image_height,			# image height, [pixel]
-		fov						# camera's horizontal field of view (FOV)
+		update_rate,					# update rate in Hz
+		viper_observer_offset,			# offset pose
+		image_width,					# image width, [pixel]
+		image_height,					# image height, [pixel]
+		fov								# camera's horizontal field of view (FOV)
 	)
 	
 	viper_observer.SetName("VIPER Observer Camera")
@@ -383,7 +386,6 @@ def main():
 		viper_observer.PushFilter(sens.ChFilterSave(out_dir + "viper_observer/"))
 
 	manager.AddSensor(viper_observer)
-
 
 	### Create a VIPER front-end camera ###
 	viper_front_cam_offset = chrono.ChFramed(
@@ -409,12 +411,12 @@ def main():
 		viper_front_cam.PushFilter(sens.ChFilterSave(out_dir + "viper_front_cam/"))
 
 	manager.AddSensor(viper_front_cam)
-	'''
+	
 
 	# ------------------- #
 	# Simulate The System #
 	# ------------------- #
-	orbit_rate = 0.02
+	orbit_rate = 0.10
 	fix_camera = True
 
 	ch_time = 0.0 # [sec]
@@ -444,8 +446,8 @@ def main():
 		rgba8_buffer = cam.GetMostRecentRGBA8Buffer()
 		if (rgba8_buffer.HasData()):
 			rgba8_data = rgba8_buffer.GetRGBA8Data()
-			print(f"RGBA8 buffer resolution: {rgba8_buffer.Width} x {rgba8_buffer.Height}")
-			print(f"First Pixel: {rgba8_data[0, 0, :]}")
+			# print(f"RGBA8 buffer resolution: {rgba8_buffer.Width} x {rgba8_buffer.Height}")
+			# print(f"middle Pixel: {rgba8_data[image_height // 2, image_width // 2, :]}")
 
 		# Update sensor manager
 		# Will render/save/filter automatically
@@ -458,13 +460,15 @@ def main():
 		ch_time = m_phys_system.GetChTime()
 
 		#### PART 2 ####
-		# # P-control steering
-		# x_offset = rover.GetChassis().GetBody().GetPos().x
-		# steering = 1.0 * (pi / 3) * max(-1.0, min(x_offset - 0.03, 1.0))
-		# driver.SetSteering(steering)
+		
+		# P-control steering
+		x_offset = rover.GetChassis().GetBody().GetPos().x
+		steering = 1.0 * (pi / 3) * max(-1.0, min(x_offset - 0.03, 1.0))
+		driver.SetSteering(steering)
 
-		# # Update rover's state
-		# rover.Update()
+		# Update rover's state
+		rover.Update()
+		
 
 	print("Sim time:", end_time, "Wall time:", time.time() - t1)
     
@@ -523,24 +527,24 @@ if __name__ == '__main__':
 	ground_depth = 0.2 # [m]
 
 	### PART 1 ###
-	rows_inter = 1.5		# [m], interval between rows
-	cols_inter = 2.0		# [m], interval between columns
-	rock_scale = 1.0
-	num_rock_rows = 5		# number of rock rows
-	num_rock_cols = 4		# number of rock columns
-	space_pad = 1.0			# [m], space pad
-	cam_radius = 7			# [m], orbit radius of camera
-	ground_posi_z = - ground_depth / 2
+	# rows_inter = 1.5		# [m], interval between rows
+	# cols_inter = 2.0		# [m], interval between columns
+	# rock_scale = 1.0
+	# num_rock_rows = 5		# number of rock rows
+	# num_rock_cols = 4		# number of rock columns
+	# space_pad = 1.0			# [m], space pad
+	# cam_radius = 7			# [m], orbit radius of camera
+	# ground_posi_z = - ground_depth / 2
 	
 	### PART 2 ###
-	# rows_inter = 2.00		# [m], interval between rows
-	# cols_inter = 1.25		# [m], interval between columns
-	# rock_scale = 0.3
-	# num_rock_rows = 8		# number of rock rows
-	# num_rock_cols = 2		# number of rock columns3
-	# space_pad = 3.0			# [m], space pad
-	# cam_radius = 15			# [m], orbit radius of camera
-	# ground_posi_z = - ground_depth / 5.0
+	rows_inter = 2.00		# [m], interval between rows
+	cols_inter = 1.25		# [m], interval between columns
+	rock_scale = 0.3
+	num_rock_rows = 8		# number of rock rows
+	num_rock_cols = 2		# number of rock columns3
+	space_pad = 3.0			# [m], space pad
+	cam_radius = 15			# [m], orbit radius of camera
+	ground_posi_z = - ground_depth / 5.0
 	
 	num_rocks = num_rock_rows * num_rock_cols
 
