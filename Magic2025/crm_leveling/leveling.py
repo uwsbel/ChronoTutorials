@@ -24,6 +24,8 @@ import pychrono.pardisomkl as mkl
 import os
 import sys
 import math
+import argparse
+import csv
 
 from enum import Enum
 
@@ -170,10 +172,72 @@ def CreateVehicle(init_pos):
 
 def LoadBladePvControlData(filename, push_seq):
     """
-    Load blade pitch and vertical control data (hardcoded values).
+    Load blade pitch and vertical control data from CSV file.
     
     Args:
-        filename: Control file name (used for pattern matching)
+        filename: Control file path
+        push_seq: Push sequence identifier (for fallback)
+        
+    Returns:
+        list: List of [pitch, vertical] control pairs
+    """
+    pv_data = []
+    
+    try:
+        if not os.path.exists(filename):
+            print(f"Warning: Control file {filename} not found. Using hardcoded fallback values.")
+            return _get_fallback_control_data(push_seq)
+        
+        with open(filename, 'r') as file:
+            csv_reader = csv.reader(file)
+            valid_lines_read = 0
+            
+            for line_num, row in enumerate(csv_reader, 1):
+                if valid_lines_read >= 2:  # Only read first 2 pairs
+                    break
+                    
+                # Skip empty lines
+                if not row or (len(row) == 1 and not row[0].strip()):
+                    continue
+                
+                if len(row) < 2:
+                    print(f"Warning: Line {line_num} in {filename} has insufficient data. Expected 2 values, got {len(row)}")
+                    continue
+                
+                try:
+                    # Parse pitch and vertical values
+                    pitch = float(row[0].strip())
+                    vertical = float(row[1].strip())
+                    pv_data.append([pitch, vertical])
+                    valid_lines_read += 1
+                except ValueError as e:
+                    print(f"Warning: Invalid number format in line {line_num} of {filename}: {e}")
+                    continue
+        
+        if valid_lines_read < 2:
+            print(f"Warning: Control file {filename} contains insufficient valid data. Expected 2 pairs, found {valid_lines_read}. Using fallback values.")
+            return _get_fallback_control_data(push_seq)
+        
+        if valid_lines_read > 2:
+            print(f"Warning: Control file {filename} contains more than 2 valid data rows. Using only the first 2.")
+            pv_data = pv_data[:2]
+            
+    except Exception as e:
+        print(f"Error reading control file {filename}: {e}")
+        print("Using hardcoded fallback values.")
+        return _get_fallback_control_data(push_seq)
+    
+    print(f"Successfully loaded blade P,V control data from {filename} ({len(pv_data)} pairs):")
+    for i, data in enumerate(pv_data):
+        print(f"  Set {i + 1}: Pitch={data[0]}, Vertical={data[1]}")
+    
+    return pv_data
+
+def _get_fallback_control_data(push_seq):
+    """
+    Get hardcoded fallback control data when file loading fails.
+    
+    Args:
         push_seq: Push sequence identifier
         
     Returns:
@@ -181,21 +245,20 @@ def LoadBladePvControlData(filename, push_seq):
     """
     pv_data = []
     
-    # Check if this is for first push or second push based on filename
-    if "firstpush" in filename or push_seq == "firstpush":
+    if push_seq == "firstpush":
         # First push values from 0.370000_firstpush.txt
         pv_data.append([0.0, -0.0007582007674500346])        # Set 1: Pitch=0.0, Vertical=-0.000758
         pv_data.append([0.5235987901687622, 0.00917821191251278]) # Set 2: Pitch=0.524, Vertical=0.009178
-    elif "secondpush" in filename or push_seq == "secondpush":
+    elif push_seq == "secondpush":
         # Second push values from 0.370000_secondpush.txt
         pv_data.append([0.0, 0.0009243348031304777])        # Set 1: Pitch=0.0, Vertical=0.000924
         pv_data.append([0.0, -0.05000000074505806])         # Set 2: Pitch=0.0, Vertical=-0.050000
     else:
-        # Default values if filename doesn't match expected patterns
+        # Default values if push_seq doesn't match expected patterns
         pv_data.append([0.0, -0.0007582007674500346])        # Default first set
         pv_data.append([0.5235987901687622, 0.00917821191251278]) # Default second set
     
-    print(f"Using blade P,V control data ({len(pv_data)} pairs):")
+    print(f"Using fallback blade P,V control data ({len(pv_data)} pairs):")
     for i, data in enumerate(pv_data):
         print(f"  Set {i + 1}: Pitch={data[0]}, Vertical={data[1]}")
     
@@ -203,17 +266,40 @@ def LoadBladePvControlData(filename, push_seq):
 
 def GetProblemSpecs():
     """
-    Get problem specifications (simplified version without CLI parsing).
+    Get problem specifications using CLI argument parsing.
     
     Returns:
         tuple: (pile_max_height, push_seq, veh_init_state)
     """
-    # Default values
-    pile_max_height = 0.37
-    push_seq = "firstpush"
+    parser = argparse.ArgumentParser(description='Soil Leveling Validation Configuration')
+    
+    # Add options for pile_height with its default value
+    parser.add_argument('--pile_height', type=float, default=0.37,
+                       help='Maximum pile height (default: 0.37)')
+    
+    # Add option for push sequence
+    parser.add_argument('--push_seq', type=str, default='firstpush',
+                       choices=['firstpush', 'secondpush'],
+                       help='Push sequence type (default: firstpush)')
+    
+    # Set default values for other parameters
     veh_init_state = [-2.0, 0.0, 0.3, 1.0, 0.0, 0.0, 0.0]
     
-    print(f"Using default parameters:")
+    # Parse command-line arguments
+    args = parser.parse_args()
+    
+    pile_max_height = args.pile_height
+    push_seq = args.push_seq
+    
+    # Display help if no arguments provided (similar to C++ version)
+    if len(sys.argv) == 1:
+        print("Using default parameters. Override with command line options:")
+        print("  --pile_height FLOAT    Maximum pile height (default: 0.37)")
+        print("  --push_seq STRING      Push sequence type: firstpush or secondpush (default: firstpush)")
+        print("  --help                 Show this help message")
+        print()
+    
+    print(f"Using parameters:")
     print(f"pile_max_height: {pile_max_height}")
     print(f"push_seq: {push_seq}")
     
@@ -442,7 +528,12 @@ print("Start simulation...")
 out_dir = f"../data/output/{pile_max_height}/soil_leveling_{push_seq}"
 os.makedirs(out_dir, exist_ok=True)
 
+# Create particle frames directory
+pc_dir = f"../data/output/{pile_max_height}/soil_leveling_{push_seq}/pc_frames"
+os.makedirs(pc_dir, exist_ok=True)
+
 simulation_complete = False
+saved_particle = False
 
 # Load blade control data
 blade_pv_filename = f"../data/control_commands/{pile_max_height}_{push_seq}.txt"
@@ -503,6 +594,14 @@ while time < tend and not simulation_complete:
                 print(f"Reached backward target at X={vehicle_back_x} at time t_back = {t_back}s")
                 print("Transition: BACKWARD_TO_NEGATIVE -> WAIT_AT_NEGATIVE")
             vehicle_state = VehicleState.WAIT_AT_NEGATIVE
+            # Save SPH data and end simulation
+            if not saved_particle:
+                try:
+                    sysFSI.GetFluidSystemSPH().SaveParticleData(pc_dir)
+                    print(f"Particle data saved to {out_dir}")
+                    saved_particle = True
+                except Exception as e:
+                    print(f"Warning: Could not save particle data: {e}")
 
     
     elif vehicle_state == VehicleState.WAIT_AT_NEGATIVE:
