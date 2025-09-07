@@ -8,9 +8,6 @@
 # in the LICENSE file at the top level of the distribution and at
 # http://projectchrono.org/license-chrono.txt.
 #
-# =============================================================================
-# Author: Luning Bakke, Huzaifa Unjhawala
-# =============================================================================
 #
 # Demo showing a Polaris vehicle moving over a floating block
 #
@@ -131,27 +128,30 @@ def main():
     # Set gravitational acceleration
     sysFSI.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -9.81))
 
-    fluid_props = fsi.FluidProperties()
-    fluid_props.density = 1000
-    fluid_props.viscosity = 5.0
-    sysSPH.SetCfdSPH(fluid_props)
+    # ==========================================
+    # TODO: Change this portion to now simulate granular material instead of fluid
+    # fluid_props = fsi.FluidProperties()
+    # fluid_props.density = 1000
+    # fluid_props.viscosity = 5.0
+    # sysSPH.SetCfdSPH(fluid_props)
 
-    sph_params = fsi.SPHParameters()
-    sph_params.integration_scheme = fsi.IntegrationScheme_RK2
-    sph_params.initial_spacing = initial_spacing
-    sph_params.d0_multiplier = 1.2
-    sph_params.max_velocity = 10.0
-    sph_params.shifting_method = fsi.ShiftingMethod_PPST
-    sph_params.shifting_ppst_push = 3.0
-    sph_params.shifting_ppst_pull = 1.0
-    sph_params.artificial_viscosity = 0.03
-    sph_params.boundary_method = fsi.BoundaryMethod_ADAMI
-    sph_params.viscosity_method = fsi.ViscosityMethod_ARTIFICIAL_UNILATERAL
-    sph_params.use_delta_sph = True
-    sph_params.delta_sph_coefficient = 0.1
-    sph_params.num_proximity_search_steps = ps_freq
-    sph_params.eos_type = fsi.EosType_TAIT
-    sysSPH.SetSPHParameters(sph_params)
+    # sph_params = fsi.SPHParameters()
+    # sph_params.integration_scheme = fsi.IntegrationScheme_RK2
+    # sph_params.initial_spacing = initial_spacing
+    # sph_params.d0_multiplier = 1.2
+    # sph_params.max_velocity = 10.0
+    # sph_params.shifting_method = fsi.ShiftingMethod_PPST
+    # sph_params.shifting_ppst_push = 3.0
+    # sph_params.shifting_ppst_pull = 1.0
+    # sph_params.artificial_viscosity = 0.03
+    # sph_params.boundary_method = fsi.BoundaryMethod_ADAMI
+    # sph_params.viscosity_method = fsi.ViscosityMethod_ARTIFICIAL_UNILATERAL
+    # sph_params.use_delta_sph = True
+    # sph_params.delta_sph_coefficient = 0.1
+    # sph_params.num_proximity_search_steps = ps_freq
+    # sph_params.eos_type = fsi.EosType_TAIT
+    # sysSPH.SetSPHParameters(sph_params)
+    # ==========================================
 
     # Set up the periodic boundary condition (only in Y direction)
     cMin = chrono.ChVector3d(-bxDim / 2 - 5 * initial_spacing, -byDim / 2 - initial_spacing / 2, -5 * initial_spacing)
@@ -242,7 +242,7 @@ def main():
         (1.0 / 12.0) * plate_mass * (plate_size.x * plate_size.x + plate_size.y * plate_size.y)   # I_zz
     )
 
-    plate_center = chrono.ChVector3d(0, 0, fzDim + plate_size.z * 0.5)
+    plate_center = chrono.ChVector3d(0, 0, fzDim + plate_size.z * 0.5 + initial_spacing)
 
     floating_plate = chrono.ChBody()
     floating_plate.SetPos(plate_center)

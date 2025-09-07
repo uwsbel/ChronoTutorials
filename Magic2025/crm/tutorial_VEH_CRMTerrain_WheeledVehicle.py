@@ -63,9 +63,6 @@ settling_time = 0
 # Set SPH spacing
 spacing = 0.04
 
-# SPH integration scheme (if exposed)
-# integration_scheme = fsi.IntegrationScheme_RK2  # Example, adjust as needed
-
 # Vehicle specification files (adjust paths as needed)
 vehicle_json = "Polaris/Polaris.json"
 engine_json = "Polaris/Polaris_EngineSimpleMap.json"
@@ -175,20 +172,23 @@ mat_props.average_diam = 0.005
 mat_props.cohesion_coeff = cohesion
 terrain.SetElasticSPH(mat_props)
 
-# Set SPH solver parameters (if available)
+# Set SPH solver parameters
 sph_params = fsi.SPHParameters()
 sph_params.integration_scheme = fsi.IntegrationScheme_RK2
 sph_params.initial_spacing = spacing
-sph_params.d0_multiplier = 1
+sph_params.d0_multiplier = 1.2
 sph_params.kernel_threshold = 0.8
 sph_params.artificial_viscosity = 0.5
+sph_params.shifting_method = fsi.ShiftingMethod_PPST
+sph_params.shifting_ppst_push = 3.0
+sph_params.shifting_ppst_pull = 1.0
 sph_params.consistent_gradient_discretization = False
 sph_params.consistent_laplacian_discretization = False
 sph_params.viscosity_method = fsi.ViscosityMethod_ARTIFICIAL_BILATERAL
 sph_params.boundary_method = fsi.BoundaryMethod_ADAMI
 terrain.SetSPHParameters(sph_params)
 
-# Set output level from SPH simulation (if available)
+# Set output level from SPH simulation
 # terrain.SetOutputLevel(fsi.OutputLevel_STATE)
 
 # Add vehicle wheels as FSI solids
