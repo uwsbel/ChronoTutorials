@@ -15,6 +15,7 @@ def main():
     parser.add_argument("-e", "--exp_name", type=str, default="chrono-quadruped")
     parser.add_argument("--ckpt", type=int, default=2000, help="Checkpoint number to load")
     parser.add_argument("--max_steps", type=int, default=500, help="Maximum steps per episode")
+    parser.add_argument("--env", type=str, default="rigid", help="Environment type (rigid, granular)")
 
     args = parser.parse_args()
 
@@ -22,10 +23,10 @@ def main():
     
     # Create environment
     device = 'cpu'
-    env_type = "granular" # rigid, granular
+    env_type = args.env # rigid, granular
 
     if env_type == "granular":
-        env_cfg, train_cfg = pickle.load(open(f"{log_dir}/cfgs_rigid.pkl", "rb"))
+        env_cfg, train_cfg = pickle.load(open(f"{log_dir}/cfgs_crm.pkl", "rb"))
         env = GranularTerrainEnv(
             num_envs=1,
             env_cfg=env_cfg,

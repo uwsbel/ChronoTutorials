@@ -436,14 +436,11 @@ class ChronoQuadrupedEnv:
         if_contact = self.contact_forces > 10
         contact_filt = torch.logical_or(if_contact, self.last_contact)
         self.last_contact = if_contact.clone()
-        
         # Compute feet air time
         first_contact = (self.feet_air_time > 0.0) * contact_filt
         self.feet_air_time += config.control_step_size
-        
         # Reward for feet in the air time
         reward_airtime = torch.sum((self.feet_air_time - 0.1) * first_contact.float(), dim=1)
-        
         # Nullify feet air time after contact
         self.feet_air_time *= (~contact_filt).float()
         

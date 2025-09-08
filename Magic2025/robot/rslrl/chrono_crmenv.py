@@ -162,9 +162,9 @@ class ChronoQuadrupedEnv:
         step_size = 5e-4  # Smaller timestep for FSI
         spacing = 0.025  # Slightly larger spacing to reduce particle count
         density = 1700
-        cohesion = 2e3  # Reduced cohesion
+        cohesion = 5e3  # Reduced cohesion [5e3 maximum]
         friction = 0.8
-        youngs_modulus = 5e5  # Reduced Young's modulus
+        youngs_modulus = 5e5  # Reduced Young's modulus [2e6 maximum]
         poisson_ratio = 0.3
         active_box_hdim = 1.5  # Smaller active domain
         settling_time = 0
@@ -199,6 +199,10 @@ class ChronoQuadrupedEnv:
         try:
             # Set SPH solver parameters
             sph_params = fsi.SPHParameters()
+            sph_params.integration_scheme = fsi.IntegrationScheme_RK2
+            sph_params.shifting_method = fsi.ShiftingMethod_PPST
+            # sph_params.shifting_ppst_push = 3.0
+            # sph_params.shifting_ppst_pull = 1.0
             sph_params.initial_spacing = spacing
             sph_params.d0_multiplier = 1
             sph_params.kernel_threshold = 0.8

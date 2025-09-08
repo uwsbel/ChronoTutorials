@@ -1,7 +1,7 @@
-# train_chrono.py
-
 import argparse
-import os
+import os,sys
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
 import pickle
 import shutil
 import torch
@@ -76,11 +76,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--exp_name", type=str, default="chrono-quadruped")
     parser.add_argument("-n", "--num_envs", type=int, default=1, help="Number of parallel environments")
-    parser.add_argument("--max_iterations", type=int, default=5000)
+    parser.add_argument("--max_iterations", type=int, default=2000)
     args = parser.parse_args()
 
     # --- Setup logging ---
-    log_dir = f"logs/{args.exp_name}"
+    log_dir = f"{project_root}/data/rslrl_rigid"
     if os.path.exists(log_dir):
         shutil.rmtree(log_dir)
     os.makedirs(log_dir, exist_ok=True)
