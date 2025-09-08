@@ -7,6 +7,12 @@ This tutorial demonstrates robot simulation on both rigid and CRM granular terra
 
 From the `robot` folder, run the following commands:
 
+**0. Install necessary dependency inside your pychrono conda environment (assume your env name is called `tutorial`)**
+```bash
+conda activate tutorial
+pip install matplotlib torch torchvision rsl-rl-lib==2.2.4 tensorboard
+```
+
 **1. Test robot on rigid terrain:**
 ```bash
 python simulation/playground.py
