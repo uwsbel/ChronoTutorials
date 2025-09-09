@@ -9,7 +9,7 @@ from pathlib import Path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
-from algo.algo_seq_leveltwice import optimize_action, create_desired_heightmap, predict_full_output
+from algo.algo_seq_leveltwice import optimize_action, create_desired_heightmap
 from algo.util import PointCloudLoader
 
 def run_optimization(pile_height: float, output_dir: str, heightmap_path: str, push_seq: str):
@@ -48,47 +48,6 @@ def run_optimization(pile_height: float, output_dir: str, heightmap_path: str, p
     print(f"Saved control commands to {output_path}")
     return output_path
 
-def run_simulation(pile_height: float, push_seq: str):
-    """Run the Chrono simulation"""
-    demo_path = "/home/harry/chrono-wisc/build/bin/demo_VEH_CRMTerrain_LevelValidation"
-    
-    # Default vehicle initial state
-    veh_init_state = "-2.0,0.0,0.3,1.0,0.0,0.0,0.0"
-    
-    # Construct command
-    cmd = [
-        demo_path,
-        "--pile_height", str(pile_height),
-        "--push_seq", push_seq,
-        "--veh_init_state", veh_init_state
-    ]
-    
-    print("Running simulation with command:", " ".join(cmd))
-    
-    # Change to demo directory before running
-    demo_dir = "/home/harry/chrono-wisc/build"
-    original_dir = os.getcwd()
-    try:
-        os.chdir(demo_dir)
-        subprocess.run(cmd)
-    finally:
-        os.chdir(original_dir)  # Change back to original directory
-
-def wait_for_file(file_path, max_wait_time=600, check_interval=5):
-    """Wait for a file to appear, with timeout"""
-    file_path = Path(file_path)
-    start_time = time.time()
-    
-    print(f"Waiting for file: {file_path}")
-    while not file_path.exists():
-        if time.time() - start_time > max_wait_time:
-            print(f"Timeout: File {file_path} did not appear within {max_wait_time} seconds")
-            return False
-        time.sleep(check_interval)
-        print(f"Still waiting... ({int(time.time() - start_time)} seconds elapsed)")
-    
-    print(f"File found after {int(time.time() - start_time)} seconds")
-    return True
 
 def convert_pointcloud_to_heightmap(pile_height, push_seq):
     """Convert the simulation's pointcloud to a heightmap"""
@@ -129,7 +88,7 @@ def convert_pointcloud_to_heightmap(pile_height, push_seq):
     csv_path = os.path.join(pc_dir, fluid_files[0])
     
     # Give the file a little time to be fully written
-    time.sleep(2)
+    time.sleep(4)
     
     # Load the point cloud
     try:
@@ -168,18 +127,14 @@ def main():
     initial_heightmap_path = project_root+f"/data/init_heightmaps/{pile_height}_height.npy"
     run_optimization(pile_height, output_dir, initial_heightmap_path, "firstpush")
     
-    # Step 2: Run first simulation (firstpush)
-    #run_simulation(pile_height, "firstpush")
     
-    # Step 3: Wait for and process the pointcloud from first simulation
+    #Wait for and process the pointcloud from first simulation
     try:
         mid_heightmap_path = convert_pointcloud_to_heightmap(pile_height, "firstpush")
         
-        # Step 4: Run second optimization with mid heightmap
         run_optimization(pile_height, output_dir, mid_heightmap_path, "secondpush")
         
-        # # Step 5: Run second simulation (secondpush)
-        # run_simulation(pile_height, "secondpush")
+
     except Exception as e:
         print(f"Error processing second part of simulation: {e}")
 

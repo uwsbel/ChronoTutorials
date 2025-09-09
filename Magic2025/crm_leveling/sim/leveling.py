@@ -619,7 +619,7 @@ while time < tend and not simulation_complete:
             driver_inputs.m_throttle = 0.0
             driver_inputs.m_braking = 1.0
             motor_vertical.SetMotionFunction(chrono.ChFunctionConst(0.0))
-            if time >= t_back + 1.0:
+            if time >= t_back + 1.5:
                 vehicle_state = VehicleState.FORWARD_TO_POSITIVE_AGAIN
                 gator.GetVehicle().GetTransmission().SetGear(1)
                 # Read the new control command file
