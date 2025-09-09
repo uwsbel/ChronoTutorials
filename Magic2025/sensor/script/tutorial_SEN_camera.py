@@ -272,7 +272,7 @@ def main():
 	# Render the buffer again to see the new grayscaled image
 	# if vis:
 	# 	cam.PushFilter(sens.ChFilterVisualize(image_width // 2, image_height // 2, "Grayscale Image"))
-
+	
 	# Save the grayscaled image at the specified path
 	if save:
 		cam.PushFilter(sens.ChFilterSave(out_dir + "gray/"))
@@ -334,7 +334,7 @@ def main():
 	#### --------------------------- ####
 	#### PART 2: ADD A RUNNING VIPER ####
 	#### --------------------------- ####
-	
+	"""
 	m_phys_system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 	m_phys_system.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -9.81))
 	chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.0025)
@@ -411,7 +411,7 @@ def main():
 		viper_front_cam.PushFilter(sens.ChFilterSave(out_dir + "viper_front_cam/"))
 
 	manager.AddSensor(viper_front_cam)
-	
+	"""
 
 	# ------------------- #
 	# Simulate The System #
@@ -460,7 +460,7 @@ def main():
 		ch_time = m_phys_system.GetChTime()
 
 		#### PART 2 ####
-		
+		"""
 		# P-control steering
 		x_offset = rover.GetChassis().GetBody().GetPos().x
 		steering = 1.0 * (pi / 3) * max(-1.0, min(x_offset - 0.03, 1.0))
@@ -468,7 +468,7 @@ def main():
 
 		# Update rover's state
 		rover.Update()
-		
+		"""
 
 	print("Sim time:", end_time, "Wall time:", time.time() - t1)
     
@@ -527,16 +527,18 @@ if __name__ == '__main__':
 	ground_depth = 0.2 # [m]
 
 	### PART 1 ###
-	# rows_inter = 1.5		# [m], interval between rows
-	# cols_inter = 2.0		# [m], interval between columns
-	# rock_scale = 1.0
-	# num_rock_rows = 5		# number of rock rows
-	# num_rock_cols = 4		# number of rock columns
-	# space_pad = 1.0			# [m], space pad
-	# cam_radius = 7			# [m], orbit radius of camera
-	# ground_posi_z = - ground_depth / 2
+	
+	rows_inter = 1.5		# [m], interval between rows
+	cols_inter = 2.0		# [m], interval between columns
+	rock_scale = 1.0
+	num_rock_rows = 5		# number of rock rows
+	num_rock_cols = 4		# number of rock columns
+	space_pad = 1.0			# [m], space pad
+	cam_radius = 7			# [m], orbit radius of camera
+	ground_posi_z = - ground_depth / 2
 	
 	### PART 2 ###
+	"""
 	rows_inter = 2.00		# [m], interval between rows
 	cols_inter = 1.25		# [m], interval between columns
 	rock_scale = 0.3
@@ -545,7 +547,8 @@ if __name__ == '__main__':
 	space_pad = 3.0			# [m], space pad
 	cam_radius = 15			# [m], orbit radius of camera
 	ground_posi_z = - ground_depth / 5.0
-	
+	"""
+
 	num_rocks = num_rock_rows * num_rock_cols
 
 	rock_diffuses = [
