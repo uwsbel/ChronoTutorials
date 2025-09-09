@@ -146,6 +146,7 @@ class Go2Robot:
         self._set_initial_pose(initial_state)
         self._set_all_joints_actuation_type(actuation_type)
         self._set_collision_type()
+        #self.robot.EnableCollisionVisualization()
         self.robot.PopulateSystem(self.chsystem)
         self.robot.GetRootChBody().SetFixed(False)
         self._set_collision()

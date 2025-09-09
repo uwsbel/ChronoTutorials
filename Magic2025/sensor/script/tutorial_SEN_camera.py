@@ -29,7 +29,7 @@ import math
 import time
 from math import pi
 
-def main(rock_diffuses):
+def main():
 	# -----------------
 	# Create the system
 	# -----------------
@@ -39,9 +39,9 @@ def main(rock_diffuses):
 	#### PART 1: BUILD THE SCENE ####
 	#### ----------------------- ####
 
-	# ------------------------------------ #
-	# Add objects to be sensed by a camera #
-	# ------------------------------------ #
+	# -------------------------- #
+	# Add objects into the scene #
+	# -------------------------- #
 
 	### Add 5 rows by 4 columns of rocks to the system ###
 	rocks = []
@@ -52,7 +52,11 @@ def main(rock_diffuses):
 
 			## Create a contact mesh ##
 			ct_mesh = chrono.ChTriangleMeshConnected()
-			ct_mesh.LoadWavefrontMesh(chrono.GetChronoDataFile("sensor/offroad/boulder_rock/boulder_rock_contact.obj"), True, True)
+			ct_mesh.LoadWavefrontMesh(
+				chrono.GetChronoDataFile("sensor/offroad/boulder_rock/boulder_rock_contact.obj"),
+				True,	# whether load normals
+				True	# whether load UVs
+			)
 			
 			# scale to a different size
 			ct_mesh.Transform(chrono.ChVector3d(0, 0, 0), chrono.ChMatrix33d(rock_scale))
@@ -67,7 +71,11 @@ def main(rock_diffuses):
 			
 			## Create a visual mesh, with loading normals and UVs ##
 			visual_mesh = chrono.ChTriangleMeshConnected()
-			visual_mesh.LoadWavefrontMesh(chrono.GetChronoDataFile("sensor/offroad/boulder_rock/boulder_rock.obj"), True, True)
+			visual_mesh.LoadWavefrontMesh(
+				chrono.GetChronoDataFile("sensor/offroad/boulder_rock/boulder_rock.obj"),
+				True,		# whether load normals
+				True,		# whether load UVs
+			)
 			
 			# scale to a different size
 			visual_mesh.Transform(chrono.ChVector3d(0, 0, 0), chrono.ChMatrix33d(rock_scale))
@@ -96,35 +104,34 @@ def main(rock_diffuses):
 				vis_mat.SetNormalMapTexture(chrono.GetChronoDataFile("sensor/offroad/boulder_rock/boulder_rock_normal.png"))
 				vis_mat.SetUseSpecularWorkflow(False)
 
-			# Set visual class and instance IDs for the rock
+			# Set visual class and instance IDs of the rock for segmentation camera
 			vis_mat.SetClassID(65535) 
 			vis_mat.SetInstanceID((65535 // num_rocks) * (rock_idx + 1))
 
 			## Create the body
-			rock_body = chrono.ChBody()
+			rock = chrono.ChBody()
 			
-			# Put to the desired position
+			# Put to the desired pose
 			posi_x = (rock_col_idx - (num_rock_cols - 1) / 2) * cols_inter
 			posi_y = ((num_rock_rows - 1) / 2 - rock_row_idx) * rows_inter
-			rock_body.SetPos(chrono.ChVector3d(posi_x, posi_y, 0))
+			rock.SetPos(chrono.ChVector3d(posi_x, posi_y, 0))
 			
-			# Assign visual and contact shapes and materials to the rock
-			rock_body.AddVisualShape(rock_visual_shape)
-			rock_body.GetVisualShape(0).SetMaterial(0, vis_mat)
-			rock_body.AddCollisionShape(rock_ct_shape)
-			rock_body.SetFixed(True)
-			rock_body.EnableCollision(True)
+			# Assign visual and contact shapes, and visual material to the rock
+			rock.AddVisualShape(rock_visual_shape)
+			rock.GetVisualShape(0).SetMaterial(0, vis_mat)
+			rock.AddCollisionShape(rock_ct_shape)
+			rock.SetFixed(True)
+			rock.EnableCollision(True)
 
 			## Add the rock to the system ##
-			rocks.append(rock_body)
+			rocks.append(rock)
 			m_phys_system.Add(rocks[-1])
 
 
-	### Add a rectangular ground to the system ###
+	### Add a cuboid ground to the system ###
 	ground_length	= (num_rock_rows - 1) * rows_inter + 2 * space_pad
 	ground_width	= (num_rock_cols - 1) * cols_inter + 2 * space_pad
 	print(f"ground length: {ground_length: .1f} m , ground width: {ground_width: .1f} m")
-
 	
 	## Define visual material
 	vis_mat = chrono.ChVisualMaterial()
@@ -133,7 +140,15 @@ def main(rock_diffuses):
 	vis_mat.SetInstanceID(32768)
 
 	## Create ground body
-	ground = chrono.ChBodyEasyBox(ground_width, ground_length, ground_depth, 1000, True, True, chrono.ChContactMaterialNSC())
+	ground = chrono.ChBodyEasyBox(
+		ground_width,					# size along X-axis
+		ground_length,					# size along Y-axis
+		ground_depth,					# size along Z-axis
+		1000,							# density, [kg/m^3]
+		True,							# visible?
+		True,							# contactable?
+		chrono.ChContactMaterialNSC()	# contact material
+	)
 	ground.GetVisualShape(0).SetMaterial(0, vis_mat)
 
 	ground.SetPos(chrono.ChVector3d(0, 0, ground_posi_z))
@@ -142,38 +157,59 @@ def main(rock_diffuses):
 	m_phys_system.Add(ground)
 
 	### Add a mirror ball to the system ###
-	# vis_mat = chrono.ChVisualMaterial()
-	# vis_mat.SetDiffuseColor(chrono.ChColor(1.0, 1.0, 1.0)) # must be ChColor
-	# vis_mat.SetUseSpecularWorkflow(False)
-	# vis_mat.SetRoughness(0.)
-	# vis_mat.SetMetallic(1.)
+	## Define visual material
+	vis_mat = chrono.ChVisualMaterial()
+	vis_mat.SetDiffuseColor(chrono.ChColor(1.0, 1.0, 1.0)) # must be ChColor
+	vis_mat.SetUseSpecularWorkflow(False)
+	vis_mat.SetRoughness(0.)
+	vis_mat.SetMetallic(1.)
 
-	# mirror_ball = chrono.ChBody()
+	## Create mirror ball body
+	mirror_ball = chrono.ChBody()
 
-	# mirror_ball.AddVisualShape(chrono.ChVisualShapeSphere(2.0))
-	# mirror_ball.GetVisualShape(0).SetMaterial(0, vis_mat)
-	# mirror_ball.SetFixed(True)
-	
-	# mirror_ball.SetPos(chrono.ChVector3d(0., 0., min(ground_length, ground_width) / 2))
-	# m_phys_system.Add(mirror_ball)
+	# Assign visual shape, visual material, and pose to the mirror ball
+	mirror_ball.AddVisualShape(chrono.ChVisualShapeSphere(2.0))
+	mirror_ball.GetVisualShape(0).SetMaterial(0, vis_mat)
+	mirror_ball.SetFixed(True)
+	mirror_ball.SetPos(chrono.ChVector3d(0., 0., min(ground_length, ground_width) / 2))
 
-	# -------------------------------------- #
-	# Create a sensor manager and add lights #
-	# -------------------------------------- #
+	## Add the mirror ball to the system ##
+	# m_phys_system.Add(mirror_ball)	# UNCOMMENT IT!
+
+	# ------------------------------------------------------ #
+	# Create a sensor manager, and add background and lights #
+	# ------------------------------------------------------ #
 	manager = sens.ChSensorManager(m_phys_system)
+
+	## Set background
+	bgd = sens.Background()
+	
+	# Set a uniform-colored background
+	bgd.mode = sens.BackgroundMode_SOLID_COLOR
+	bgd.color_zenith = chrono.ChVector3f(0.0, 0.0, 0.0)
+	
+	# Or set as environment map
+	# bgd.mode = sens.BackgroundMode_ENVIRONMENT_MAP 									# UNCOMMENT IT!
+	# bgd.env_tex = chrono.GetChronoDataFile("sensor/textures/starmap_2020_4k.hdr")	# UNCOMMENT IT!
+
+	manager.scene.SetBackground(bgd)
 
 	## Add a point light
 	sun_intensity = 1.0
 	sun_color = chrono.ChColor(sun_intensity, sun_intensity, sun_intensity)
 	sun_radius = 100.0 # [m]
-	sun_elevation = 45 * pi/180. # [rad]
-	sun_azimuth = 45 * pi/180. # [rad]
+	sun_elevation = 45 * pi/180. # [rad], CHANGE THE VALUE!
+	sun_azimuth = 45 * pi/180. # [rad], CHANGE THE VALUE!
 	
 	sun_x = sun_radius * math.cos(sun_elevation) * math.cos(sun_azimuth)
 	sun_y = sun_radius * math.cos(sun_elevation) * math.sin(sun_azimuth)
 	sun_z = sun_radius * math.sin(sun_elevation)
 
-	manager.scene.AddPointLight(chrono.ChVector3f(sun_x, sun_y, sun_z), sun_color, 10 * sun_radius)
+	manager.scene.AddPointLight(
+		chrono.ChVector3f(sun_x, sun_y, sun_z),	# point light's position
+		sun_color,								# point light's color
+		10 * sun_radius,						# point light's max range
+	)
 
 	## Set ambient light
 	ambient_intensity = 0.05
@@ -183,7 +219,17 @@ def main(rock_diffuses):
 	# ------------------------------------------------- #
 	# Create sensors and add them to the sensor manager #
 	# ------------------------------------------------- #
-	offset_pose = chrono.ChFramed(chrono.ChVector3d(0, 0, 0))
+	camera_hight = 4.0 # [m]
+	camera_azimuth = 0 * pi/180.0 # [rad]
+	offset_pose = chrono.ChFramed(
+		chrono.ChVector3d(
+			cam_radius * math.cos(camera_azimuth),
+			cam_radius * math.sin(camera_azimuth),
+			camera_hight
+		),
+			chrono.QuatFromAngleAxis(pi + camera_azimuth, chrono.ChVector3d(0, 0, 1))
+		* chrono.QuatFromAngleAxis(math.atan2(camera_hight, cam_radius), chrono.ChVector3d(0, 1, 0))
+	)
 	
 	### Create a color camera ###
 	cam = sens.ChCameraSensor(
@@ -198,9 +244,9 @@ def main(rock_diffuses):
 	cam.SetLag(lag)
 	cam.SetCollectionWindow(exposure_time)
 
-	## Create a filter stack for post-processing the data from the camera ##
+	## Create a Filter Graph for post-processing the data from the camera ##
 	if noise_model == "CONST_NORMAL":
-		cam.PushFilter(sens.ChFilterCameraNoiseConstNormal(0.0, 0.02))
+		cam.PushFilter(sens.ChFilterCameraNoiseConstNormal(0.0, 0.2))
 	
 	elif noise_model == "PIXEL_DEPENDENT":
 		cam.PushFilter(sens.ChFilterCameraNoisePixDep(0.02, 0.03))
@@ -262,7 +308,7 @@ def main(rock_diffuses):
 		cam.PushFilter(sens.ChFilterSave(out_dir + "depth/"))
 
 	# manager.AddSensor(depth_cam)
-
+	
 	### Create a segmentation camera and add it to the sensor manager ###
 	segment_cam = sens.ChSegmentationCamera(
 		ground,					# body camera is attached to
@@ -284,7 +330,6 @@ def main(rock_diffuses):
 		segment_cam.PushFilter(sens.ChFilterSave(out_dir + "segment/"))
 
 	# manager.AddSensor(segment_cam)
-
 
 	#### --------------------------- ####
 	#### PART 2: ADD A RUNNING VIPER ####
@@ -316,16 +361,19 @@ def main(rock_diffuses):
 			viper_observer_radius * math.sin(viper_observer_angle),
 			viper_observer_hight
 		),
-			chrono.QuatFromAngleAxis(pi + viper_observer_angle, chrono.ChVector3d(0, 0, 1))
-		* chrono.QuatFromAngleAxis(math.atan2(viper_observer_hight, viper_observer_radius), chrono.ChVector3d(0, 1, 0))
+		chrono.QuatFromAngleAxis(pi + viper_observer_angle, chrono.ChVector3d(0, 0, 1))
+		* chrono.QuatFromAngleAxis(
+			math.atan2(viper_observer_hight, viper_observer_radius),
+			chrono.ChVector3d(0, 1, 0)
+		)
 	)
 	viper_observer = sens.ChCameraSensor(
 		rover.GetChassis().GetBody(),	# body camera is attached to
-		update_rate,			# update rate in Hz
-		viper_observer_offset,		# offset pose
-		image_width,			# image width, [pixel]
-		image_height,			# image height, [pixel]
-		fov						# camera's horizontal field of view (FOV)
+		update_rate,					# update rate in Hz
+		viper_observer_offset,			# offset pose
+		image_width,					# image width, [pixel]
+		image_height,					# image height, [pixel]
+		fov								# camera's horizontal field of view (FOV)
 	)
 	
 	viper_observer.SetName("VIPER Observer Camera")
@@ -338,7 +386,6 @@ def main(rock_diffuses):
 		viper_observer.PushFilter(sens.ChFilterSave(out_dir + "viper_observer/"))
 
 	manager.AddSensor(viper_observer)
-
 
 	### Create a VIPER front-end camera ###
 	viper_front_cam_offset = chrono.ChFramed(
@@ -364,18 +411,13 @@ def main(rock_diffuses):
 		viper_front_cam.PushFilter(sens.ChFilterSave(out_dir + "viper_front_cam/"))
 
 	manager.AddSensor(viper_front_cam)
+	
 
-
-	# --------------- #
-	# Simulate system #
-	# --------------- #
-	# cam_radius = 7 # [m], PART 1
-	camera_hight = 4.0 # [m]
-	cam_radius = 15 # [m], PART 2
-	camera_hight = 4.0 # [m]
-	orbit_rate = 0.02
-	camera_angle = 180 * pi/180.0 # [rad]
-	fix_camera = False
+	# ------------------- #
+	# Simulate The System #
+	# ------------------- #
+	orbit_rate = 0.10
+	fix_camera = True
 
 	ch_time = 0.0 # [sec]
 
@@ -385,29 +427,27 @@ def main(rock_diffuses):
 	while (True):
 		
 		if (fix_camera == False):
-			camera_angle = ch_time * orbit_rate
-		
-		cam_pose = chrono.ChFramed(
-			chrono.ChVector3d(
-				cam_radius * math.cos(camera_angle),
-				cam_radius * math.sin(camera_angle),
-				camera_hight
-			),
-			  chrono.QuatFromAngleAxis(pi + camera_angle, chrono.ChVector3d(0, 0, 1))
-			* chrono.QuatFromAngleAxis(math.atan2(camera_hight, cam_radius), chrono.ChVector3d(0, 1, 0))
-		)
+			camera_azimuth = ch_time * orbit_rate
+			cam_pose = chrono.ChFramed(
+				chrono.ChVector3d(
+					cam_radius * math.cos(camera_azimuth),
+					cam_radius * math.sin(camera_azimuth),
+					camera_hight
+				),
+				chrono.QuatFromAngleAxis(pi + camera_azimuth, chrono.ChVector3d(0, 0, 1))
+				* chrono.QuatFromAngleAxis(math.atan2(camera_hight, cam_radius), chrono.ChVector3d(0, 1, 0))
+			)
 
-		cam.SetOffsetPose(cam_pose)
-		depth_cam.SetOffsetPose(cam_pose)
-		segment_cam.SetOffsetPose(cam_pose)
+			cam.SetOffsetPose(cam_pose)
+			depth_cam.SetOffsetPose(cam_pose)
+			segment_cam.SetOffsetPose(cam_pose)
 
 		# Access the RGBA8 buffer from the camera
 		rgba8_buffer = cam.GetMostRecentRGBA8Buffer()
 		if (rgba8_buffer.HasData()):
 			rgba8_data = rgba8_buffer.GetRGBA8Data()
-			# print('RGBA8 buffer recieved from cam. Camera resolution: {0}x{1}'
-				#   .format(rgba8_buffer.Width, rgba8_buffer.Height))
-			# print('First Pixel: {0}'.format(rgba8_data[0, 0, :]))
+			# print(f"RGBA8 buffer resolution: {rgba8_buffer.Width} x {rgba8_buffer.Height}")
+			# print(f"middle Pixel: {rgba8_data[image_height // 2, image_width // 2, :]}")
 
 		# Update sensor manager
 		# Will render/save/filter automatically
@@ -420,6 +460,7 @@ def main(rock_diffuses):
 		ch_time = m_phys_system.GetChTime()
 
 		#### PART 2 ####
+		
 		# P-control steering
 		x_offset = rover.GetChassis().GetBody().GetPos().x
 		steering = 1.0 * (pi / 3) * max(-1.0, min(x_offset - 0.03, 1.0))
@@ -427,6 +468,7 @@ def main(rock_diffuses):
 
 		# Update rover's state
 		rover.Update()
+		
 
 	print("Sim time:", end_time, "Wall time:", time.time() - t1)
     
@@ -437,9 +479,9 @@ if __name__ == '__main__':
 	# -----------------
 
 	# Noise model attached to the sensor
-	# noise_model="CONST_NORMAL"      # Gaussian noise with constant mean and standard deviation
-	# noise_model="PIXEL_DEPENDENT"   # Pixel dependent gaussian noise
-	# noise_model="RESPONSE_FUNCTION" # Noise model based on camera's response and parameters
+	# noise_model = "CONST_NORMAL"      # Gaussian noise with constant mean and standard deviation
+	# noise_model = "PIXEL_DEPENDENT"   # Pixel dependent gaussian noise
+	# noise_model = "RESPONSE_FUNCTION" # Noise model based on camera's response and parameters
 	noise_model = "NONE"              # No noise model
 
 	# Camera lens model
@@ -485,12 +527,13 @@ if __name__ == '__main__':
 	ground_depth = 0.2 # [m]
 
 	### PART 1 ###
-	# rows_inter = 1.5 # [m], interval between rows
-	# cols_inter = 2.0 # [m], interval between columns
+	# rows_inter = 1.5		# [m], interval between rows
+	# cols_inter = 2.0		# [m], interval between columns
 	# rock_scale = 1.0
-	# num_rock_rows = 5 # number of rock rows
-	# num_rock_cols = 4 # number of rock columns
-	# space_pad = 1.0 # [m], space pad
+	# num_rock_rows = 5		# number of rock rows
+	# num_rock_cols = 4		# number of rock columns
+	# space_pad = 1.0			# [m], space pad
+	# cam_radius = 7			# [m], orbit radius of camera
 	# ground_posi_z = - ground_depth / 2
 	
 	### PART 2 ###
@@ -500,9 +543,9 @@ if __name__ == '__main__':
 	num_rock_rows = 8		# number of rock rows
 	num_rock_cols = 2		# number of rock columns3
 	space_pad = 3.0			# [m], space pad
+	cam_radius = 15			# [m], orbit radius of camera
 	ground_posi_z = - ground_depth / 5.0
 	
-
 	num_rocks = num_rock_rows * num_rock_cols
 
 	rock_diffuses = [
@@ -517,4 +560,4 @@ if __name__ == '__main__':
 	# If running from a different directory, you must change the path to the data directory with:
 	# chrono.SetChronoDataPath('path/to/data')
 
-	main(rock_diffuses)
+	main()

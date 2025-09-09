@@ -16,7 +16,7 @@ Follow the official guide for your operating system to update the driver.
 
 ### 2. Install Anaconda or Miniconda
 
-Download and install Anaconda or Miniconda from [anaconda.com/download](https://www.anaconda.com/download).
+If you haven't already done so on your machine, download and install Anaconda or Miniconda from [anaconda.com/download](https://www.anaconda.com/download).
 
 ### 3. Create and Activate Conda Environment
 
@@ -51,6 +51,7 @@ conda activate tutorial
 For instructions on running the demo scripts in each tutorial, please refer to the `readme.md` file in the respective subfolders:
 
 - `crm`
+- `fsi`
 - `dem`
 - `robot`
 - `sensor`

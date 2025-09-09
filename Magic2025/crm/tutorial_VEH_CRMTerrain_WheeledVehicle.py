@@ -2,7 +2,6 @@ import pychrono.core as chrono
 import pychrono.vehicle as veh
 import pychrono.fsi as fsi
 import pychrono.vsg as vsg
-import pychrono.pardisomkl as mkl
 import os
 
 def CreateFSIWheels(vehicle, terrain):
@@ -27,35 +26,20 @@ def CreateFSIWheels(vehicle, terrain):
                 # Try to get FEA mesh if it's a deformable tire
                 if hasattr(tire, 'GetMesh'):
                     mesh = tire.GetMesh()
-                    if mesh and mesh.GetNumContactSurfaces() > 0:
-                        surf = mesh.GetContactSurface(0)
-                        print(f"FEA tire HAS contact surface")
-                        # Add FEA mesh to terrain
-                        terrain.AddFeaMesh(mesh, False)
-                    else:
-                        print("FEA tire DOES NOT HAVE contact surface!")
-                        # Still add as FEA mesh
-                        terrain.AddFeaMesh(mesh, False)
+                    terrain.AddFeaMesh(mesh, False)
                 else:
                     # Rigid tire - add as rigid body
                     terrain.AddRigidBody(wheel.GetSpindle(), geometry, False)
-                    # terrain.AddRigidBodyMesh(body, chrono.VNULL, mesh_filename, chrono.VNULL, 0.01)
             except Exception as e:
                 print(f"Error processing wheel: {e}")
                 # If we can't access FEA mesh methods, treat as rigid tire
-                try:
-                    terrain.AddRigidBody(wheel.GetSpindle(), geometry, False)
-                    # terrain.AddRigidBodyMesh(body, chrono.VNULL, mesh_filename, chrono.VNULL, 0.01)
-                except Exception as e2:
-                    print(f"Error adding rigid body: {e2}")
-
+                terrain.AddRigidBody(wheel.GetSpindle(), geometry, False)
 
     
 veh.SetDataPath(chrono.GetChronoDataPath() + 'vehicle/')
 # Problem settings (mirroring the C++ demo)
 target_speed = 7.0
-# tend = 30.0
-tend = 8.0
+tend = 30.0
 verbose = True
 
 # Visualization settings
@@ -79,9 +63,6 @@ settling_time = 0
 # Set SPH spacing
 spacing = 0.04
 
-# SPH integration scheme (if exposed)
-# integration_scheme = fsi.IntegrationScheme_RK2  # Example, adjust as needed
-
 # Vehicle specification files (adjust paths as needed)
 vehicle_json = "Polaris/Polaris.json"
 engine_json = "Polaris/Polaris_EngineSimpleMap.json"
@@ -92,7 +73,6 @@ if(tire_json.find("ANCF4Tire") != -1):
     fea_tires = True
 else:
     fea_tires = False
-
 
 # Visualization type for vehicle parts (PRIMITIVES, MESH, or NONE)
 chassis_vis_type = chrono.VisualizationType_MESH
@@ -134,6 +114,7 @@ sysMBS = vehicle.GetSystem()
 
 # Set solver and integrator based on tire type
 if fea_tires:
+    import pychrono.pardisomkl as mkl
     step_size = 1e-4
     # solver_type = mkl.ChSolverPardisoMKL
     integrator_type = chrono.ChTimestepper.Type_EULER_IMPLICIT_LINEARIZED
@@ -169,12 +150,12 @@ sysMBS.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 # ----------------------
 # Create the CRM terrain
 # ----------------------
-# This assumes pychrono.vehicle.CRMTerrain exists and has a similar API to C++
+# Use the proper CRMTerrain class from vehicle module
 terrain = veh.CRMTerrain(sysMBS, spacing)
 sysFSI = terrain.GetSystemFSI()
 terrain.SetVerbose(verbose)
 terrain.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -9.81))
-terrain.SetStepSizeCFD(5e-4)
+terrain.SetStepSizeCFD(step_size)
 
 # Register the vehicle with the CRM terrain
 terrain.RegisterVehicle(vehicle)
@@ -191,35 +172,44 @@ mat_props.average_diam = 0.005
 mat_props.cohesion_coeff = cohesion
 terrain.SetElasticSPH(mat_props)
 
-# Set SPH solver parameters (if available)
+# Set SPH solver parameters
 sph_params = fsi.SPHParameters()
+sph_params.integration_scheme = fsi.IntegrationScheme_RK2
 sph_params.initial_spacing = spacing
-sph_params.d0_multiplier = 1
+sph_params.d0_multiplier = 1.2
 sph_params.kernel_threshold = 0.8
 sph_params.artificial_viscosity = 0.5
+sph_params.shifting_method = fsi.ShiftingMethod_PPST
+sph_params.shifting_ppst_push = 3.0
+sph_params.shifting_ppst_pull = 1.0
 sph_params.consistent_gradient_discretization = False
 sph_params.consistent_laplacian_discretization = False
-# ... add more as needed
+sph_params.viscosity_method = fsi.ViscosityMethod_ARTIFICIAL_BILATERAL
+sph_params.boundary_method = fsi.BoundaryMethod_ADAMI
 terrain.SetSPHParameters(sph_params)
 
-# Set output level from SPH simulation (if available)
+# Set output level from SPH simulation
 # terrain.SetOutputLevel(fsi.OutputLevel_STATE)
 
 # Add vehicle wheels as FSI solids
 print("Adding vehicle wheels as FSI solids...")
 CreateFSIWheels(vehicle, terrain)
 
-terrain.SetActiveDomain(chrono.ChVector3d(active_box_dim, active_box_dim, active_box_dim))
+# CRITICAL: Use correct active domain setup
+terrain.SetActiveDomain(chrono.ChVector3d(active_box_dim))
 terrain.SetActiveDomainDelay(settling_time)
 
 # Construct the terrain and associated path
 print("Create terrain...")
 terrain_length = 20
 terrain_width = 3
-terrain.Construct(chrono.ChVector3d(terrain_length, terrain_width, 0.25), chrono.ChVector3d(terrain_length / 2, 0, 0), (fsi.BoxSide_ALL & ~fsi.BoxSide_Z_POS))
+terrain.Construct(chrono.ChVector3d(terrain_length, terrain_width, 0.25), 
+                  chrono.ChVector3d(terrain_length / 2, 0, 0), 
+                  (fsi.BoxSide_ALL & ~fsi.BoxSide_Z_POS))
 
-# Create straight line path (if needed for driver)
-path = veh.StraightLinePath(chrono.ChVector3d(0, 0, vehicle_init_height), chrono.ChVector3d(terrain_length, 0, vehicle_init_height), 1)
+# Create straight line path
+path = veh.StraightLinePath(chrono.ChVector3d(0, 0, vehicle_init_height), 
+                            chrono.ChVector3d(terrain_length, 0, vehicle_init_height), 1)
 
 # Initialize the terrain system
 terrain.Initialize()
@@ -230,7 +220,7 @@ print(f"  Bndry BCE markers: {terrain.GetNumBoundaryBCEMarkers()}")
 print(f"  SPH AABB:          {aabb.min}   {aabb.max}")
 
 # Set maximum vehicle X location (based on CRM patch size)
-x_max = aabb.max.x - 10
+x_max = aabb.max.x - 4.5
 
 # --------------------------------
 # Create the path-following driver
@@ -248,6 +238,7 @@ driver.Initialize()
 out_dir = chrono.GetChronoOutputPath() + "CRM_Wheeled_Vehicle/"
 os.makedirs(out_dir, exist_ok=True)
 out_file = os.path.join(out_dir, "results.txt")
+
 # Use a simple CSV writer
 import csv
 csvfile = open(out_file, 'w', newline='')
@@ -258,7 +249,7 @@ csvwriter = csv.writer(csvfile, delimiter=' ')
 # -----------------------------
 vis = None
 if render:
-    # FSI plugin (assume similar to DamBreak demo)
+    # FSI plugin
     col_callback = fsi.ParticleHeightColorCallback(aabb.min.z, aabb.max.z)
     visFSI = fsi.ChFsiVisualizationVSG(sysFSI)
     visFSI.EnableFluidMarkers(visualization_sph)
