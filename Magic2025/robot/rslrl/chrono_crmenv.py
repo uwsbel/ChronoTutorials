@@ -150,7 +150,7 @@ class ChronoQuadrupedEnv:
         system.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -9.81))
         system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
         system.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN)
-        system.GetSolver().AsIterative().SetMaxIterations(60)
+        system.GetSolver().AsIterative().SetMaxIterations(100)
         
         # Create robot using actual Go2Robot class
         ## TODO: Hardcode initial state for now because small height would cause bce fall out of region
@@ -163,7 +163,7 @@ class ChronoQuadrupedEnv:
         spacing = 0.025  # Slightly larger spacing to reduce particle count
         density = 1700
         cohesion = 5e3  # Reduced cohesion [5e3 maximum]
-        friction = 0.8
+        friction = 0.9
         youngs_modulus = 5e5  # Reduced Young's modulus [2e6 maximum]
         poisson_ratio = 0.3
         active_box_hdim = 1.5  # Smaller active domain
