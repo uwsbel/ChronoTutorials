@@ -1,0 +1,232 @@
+Params received from FMU
+Sim parameters:
+	timestep: 0.0002
+	cfd_timestep: 1e-05
+	log_interval: 0.1
+Tire parameters:
+Terrain parameters:
+	patch_length: 8
+	patch_width: 8
+	patch_depth: 0.5
+	enable_crm_active_domain: 1
+	active_box_dim: 1
+	active_domain_settling_time: 0
+Soil material parameters:
+	density: 1700
+	cohesion: 5000
+	friction: 0.8
+	youngs_modulus: 1e+06
+	poisson_ratio: 0.3
+	num_proximity_search_steps: 4
+	terrain_spacing: 0.08
+Exe parameters:
+	exe_out_to_file: 1
+Visualization parameters:
+	vis_flag: 1
+	capture_frames: 1
+	vis_camera_pos: -20, -10, 3
+	vis_camera_chase_target: 0
+ody_vis: 1
+	mesh_vis: 0
+	vis_render_fps: 30
+Path parameters: 
+	terrain_save_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\matlab\results
+	foot_pad_mesh_file_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\CAD\lander-model\foot-pad.obj
+	exe_stdout_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\matlab\file_out\out.txt
+	exe_stderr_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\matlab\file_out\err.txt
+Loaded meshes
+CRMTerrain created
+Add rigid body 'pad_0'
+Add rigid body 'pad_1'
+Add rigid body 'pad_2'
+Add rigid body 'pad_3'
+SetElasticSPH done
+SetSPHParameters done
+Active domain set
+Construct box ChFsiProblemSPH
+  Particle grid size: 101 101 7
+  Num. SPH particles: 71407
+Construct box container
+  Particle grid size:        101 101 7
+  Num. boundary BCE markers: 46827 (46827)
+Fixed patch constructed
+Remove SPH particles inside FSI solid volumes
+  Num. SPH particles: 71407
+AABB of SPH particles:
+  min: -4  -4  -0.5
+  max: 4  4  -0.02
+AABB of SPH particles + BCE markers
+  min: -4.24  -4.24  -0.74
+  max: 4.24  4.24  0.22
+FSI system has custom interface
+FSI interface solids
+  Num. bodies:     4
+  Num meshes 1D:   0
+  Num nodes 1D:    0
+  Num elements 1D: 0
+  Num meshes 2D:   0
+  Num nodes 2D:    0
+  Num elements 2D: 0
+Add BCE for rigid body
+  Num. BCE markers: 38
+Add BCE for rigid body
+  Num. BCE markers: 38
+Add BCE for rigid body
+  Num. BCE markers: 38
+Add BCE for rigid body
+  Num. BCE markers: 38
+GPU device: NVIDIA GeForce RTX 4080
+  Total global memory: 15.9917 GB
+  Total constant memory: 64 KB
+  Total available static shared memory per block: 48 KB
+  Number of multiprocessors: 76
+  Compute capability: 8.9
+  Max. dynamic shared memory per block: 99 KB
+  Total shared memory per multiprocessor: 100 KB
+Simulation parameters
+  Viscosity treatment: Artificial Bilateral  (coefficient: 0.5)
+  Boundary treatment: Adami
+  Kernel type: Cubic Spline
+  Integration scheme: Runge-Kutta 2
+  Rheology model: MU_OF_I
+  num_neighbors: 27
+  rho0: 1700
+  invrho0: 0.000588235
+  mu0: 0.001
+  bodyForce3: 0 0 0
+  gravity: 0 0 -1.635
+  d0: 0.08
+  1/d0: 12.5
+  d0_multiplier: 1
+  h: 0.08
+  1/h: 12.5
+  num_bce_layers: 3
+  epsMinMarkersDis: 0.01
+  markerMass: 0.870424
+  volume0: 0.000512
+  gradient_type: 0
+  v_Max: 1
+  Cs: 22.1404
+  density_reinit_steps: 200000000
+  Proximity search performed every 2 steps
+  use_variable_time_step: 0
+  dT: 1e-05
+  non_newtonian: 0
+  mu_of_I : 0
+  rheology_model: 0
+  ave_diam: 0.005
+  mu_max: 0
+  mu_fric_s: 0.8
+  mu_fric_2: 0.8
+  mu_I0: 0.04
+  mu_I_b: 0
+  mcc_M: 0
+  mcc_kappa: 0
+  mcc_lambda: 0
+  mcc_v_lambda: 0
+  HB_k: 0
+  HB_n: 0
+  HB_tau0: 0
+  Coh_coeff: 5000
+  E_young: 1e+06
+  G_shear: 384615
+  INV_G_shear: 2.6e-06
+  K_bulk: 833333
+  free_surface_threshold: 2
+  PPE_relaxation: 1
+  Conservative_Form: 1
+  Pressure_Constraint: 0
+  binSize0: 0.16
+  boxDims: 8.96 8.96 1.44
+  gridSize: 56 56 9
+  cMin: -4.48 -4.48 -0.98
+  cMax: 4.48 4.48 0.46
+Counters
+  numFsiBodies:       4
+  numFsiElements1D:   0
+  numFsiElements2D:   0
+  numFsiNodes1D:      0
+  numFsiNodes2D:      0
+  numGhostMarkers:    0
+  numHelperMarkers:   0
+  numFluidMarkers:    71407
+  numBoundaryMarkers: 46827
+  numRigidMarkers:    152
+  numFlexMarkers1D:   0
+  numFlexMarkers2D:   0
+  numAllMarkers:      118386
+  startRigidMarkers:  118234
+  startFlexMarkers1D: 118386
+  startFlexMarkers2D: 118386
+Reference array (size: 3)
+  0: 0 71407 -1 -1
+  1: 71407 118234 0 0
+  2: 118234 118386 1 1
+Reference array FEA (size: 0)
+
+[terrain] SPH AABB min=(-4, -4, -0.5)  max=(4, 4, -0.02)
+
+Terrain and rigid body setup complete!
+t=0.0002
+tire 0
+ 	pos=(0.3609, 2.5913, 1.6530)	rot=(-0.9914, 0.0000, 0.1305, -0.0000)
+	linvel=(0.0000, 0.0000, 0.0000)	angvel=(0.0000, 0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 1
+ 	pos=(-2.1421, -0.0000, 0.9823)	rot=(0.7011, 0.0923, -0.0923, -0.7011)
+	linvel=(0.0000, 0.0000, 0.0000)	angvel=(0.0000, 0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 2
+ 	pos=(0.3609, -2.5913, 1.6530)	rot=(0.9914, -0.0000, -0.1305, 0.0000)
+	linvel=(0.0000, 0.0000, 0.0000)	angvel=(0.0000, 0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 3
+ 	pos=(2.8639, -0.0000, 2.3237)	rot=(0.7011, 0.0923, -0.0923, -0.7011)
+	linvel=(0.0000, 0.0000, 0.0000)	angvel=(0.0000, 0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+t=0.1000
+tire 0
+ 	pos=(0.3609, 2.5913, 1.6449)	rot=(-0.9914, 0.0000, 0.1305, -0.0000)
+	linvel=(0.0000, -0.0000, -0.1631)	angvel=(0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 1
+ 	pos=(-2.1421, -0.0000, 0.9742)	rot=(0.7011, 0.0923, -0.0923, -0.7011)
+	linvel=(0.0000, -0.0000, -0.1631)	angvel=(-0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 2
+ 	pos=(0.3609, -2.5913, 1.6449)	rot=(0.9914, -0.0000, -0.1305, 0.0000)
+	linvel=(0.0000, -0.0000, -0.1631)	angvel=(0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 3
+ 	pos=(2.8639, -0.0000, 2.3156)	rot=(0.7011, 0.0923, -0.0923, -0.7011)
+	linvel=(0.0000, -0.0000, -0.1631)	angvel=(-0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+t=0.2000
+tire 0
+ 	pos=(0.3609, 2.5913, 1.6204)	rot=(-0.9914, 0.0000, 0.1305, -0.0000)
+	linvel=(0.0000, -0.0000, -0.3266)	angvel=(0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 1
+ 	pos=(-2.1421, -0.0000, 0.9497)	rot=(0.7011, 0.0923, -0.0923, -0.7011)
+	linvel=(0.0000, 0.0000, -0.3266)	angvel=(-0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 2
+ 	pos=(0.3609, -2.5913, 1.6204)	rot=(0.9914, -0.0000, -0.1305, 0.0000)
+	linvel=(0.0000, -0.0000, -0.3266)	angvel=(0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000
+tire 3
+ 	pos=(2.8639, -0.0000, 2.2911)	rot=(0.7011, 0.0923, -0.0923, -0.7011)
+	linvel=(0.0000, 0.0000, -0.3266)	angvel=(-0.0000, -0.0000, 0.0000)
+	Fx=0.0000	Fy=0.0000	Fz=0.0000
+	Mx=0.0000	My=0.0000	Mz=0.0000

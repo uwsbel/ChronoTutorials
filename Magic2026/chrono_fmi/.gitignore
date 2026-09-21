@@ -1,0 +1,62 @@
+# ── C++ / build artifacts ──
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+
+# CMake (Chrono uses CMake)
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Debug / IDE
+*.pdb
+*.ilk
+.vs/
+.vscode/
+*.user
+
+# ── FMI ──
+*.fmu
+
+# ── Documents ──
+*.docx
+*.pdf
+*.pptx
+
+# ── Video ──
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wmv
+
+# ── Images ──
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.svg
+
+# ── MATLAB (if still used) ──
+*.asv
+*.slxc
+slprj/
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── OS ──
+*.csv
