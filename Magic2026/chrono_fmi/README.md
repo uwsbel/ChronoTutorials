@@ -7,6 +7,8 @@ Two worked examples of exporting Project Chrono models as **FMI 3.0 co-simulatio
 
 Author: Ahmed Ansari (and Claude)
 
+Feel free to contact Ahmed at [aansari4@wisc.edu](mailto:aansari4@wisc.edu) in case there are issues with the instructions in this file or the repo contents.
+
 ---
 
 ## Before you start
