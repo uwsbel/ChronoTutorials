@@ -5,7 +5,7 @@ Two worked examples of exporting Project Chrono models as **FMI 3.0 co-simulatio
 1. **`spring_system/`** — a simple two-mass spring. The starting point: minimal source, minimal build, all-static.
 2. **`lunar_lander/`** — a lander touching down on Chrono CRM/SCM deformable terrain. A realistic model that needs an external-process workaround for its dynamic dependencies.
 
-Author: Ahmed Ansari
+Author: Ahmed Ansari (and Claude)
 
 ---
 
