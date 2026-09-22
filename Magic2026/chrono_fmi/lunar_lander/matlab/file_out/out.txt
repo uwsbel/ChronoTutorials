@@ -30,10 +30,10 @@ Visualization parameters:
 	mesh_vis: 0
 	vis_render_fps: 30
 Path parameters: 
-	terrain_save_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\matlab\results
-	foot_pad_mesh_file_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\CAD\lander-model\foot-pad.obj
-	exe_stdout_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\matlab\file_out\out.txt
-	exe_stderr_path: C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\lunar_lander\matlab\file_out\err.txt
+	terrain_save_path: D:\ahmed\Documents\UW-Madison\SBEL\ChronoTutorials\Magic2026\chrono_fmi\lunar_lander\matlab\results
+	foot_pad_mesh_file_path: D:\ahmed\Documents\UW-Madison\SBEL\ChronoTutorials\Magic2026\chrono_fmi\lunar_lander\CAD\lander-model\foot-pad.obj
+	exe_stdout_path: D:\ahmed\Documents\UW-Madison\SBEL\ChronoTutorials\Magic2026\chrono_fmi\lunar_lander\matlab\file_out\out.txt
+	exe_stderr_path: D:\ahmed\Documents\UW-Madison\SBEL\ChronoTutorials\Magic2026\chrono_fmi\lunar_lander\matlab\file_out\err.txt
 Loaded meshes
 CRMTerrain created
 Add rigid body 'pad_0'
@@ -75,11 +75,11 @@ Add BCE for rigid body
   Num. BCE markers: 38
 Add BCE for rigid body
   Num. BCE markers: 38
-GPU device: NVIDIA GeForce RTX 4080
-  Total global memory: 15.9917 GB
+GPU device: NVIDIA GeForce RTX 4050 Laptop GPU
+  Total global memory: 5.99658 GB
   Total constant memory: 64 KB
   Total available static shared memory per block: 48 KB
-  Number of multiprocessors: 76
+  Number of multiprocessors: 20
   Compute capability: 8.9
   Max. dynamic shared memory per block: 99 KB
   Total shared memory per multiprocessor: 100 KB

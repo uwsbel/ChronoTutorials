@@ -1,5 +1,5 @@
 % add fmu to path
-addpath("C:\Users\ahmed\Documents\sbel\magic_2026\tutorials\spring_system\fmi_implementation\build\FMU3cs_two_mass_spring")
+addpath("..\build\FMU3cs_two_mass_spring")
 
 % simulation parameters
 timestep = 1e-4;
@@ -27,3 +27,5 @@ init_pos_simscape = 0.42;
 force_amplitude = 2;
 force_freq = 1 / 5;
 
+%% open simscape model
+two_mass_spring_fmu
